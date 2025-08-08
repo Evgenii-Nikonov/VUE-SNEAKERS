@@ -1,7 +1,15 @@
 <script setup>
 import Card from './Card.vue'
 
-const props = defineProps()
+let isAdded = false
+let isFavorite = false
+
+const onClickAdd = () => {
+  isAdded = !isAdded
+}
+const onClickFavorite = () => {
+  isFavorite = !isFavorite
+}
 </script>
 
 <template>
@@ -10,6 +18,8 @@ const props = defineProps()
       imageUrl="/sneakers/sneakers-1.jpg"
       title="Мужские кросовки Nike Blazer mid"
       :price="5000"
+      :isAdded="isAdded"
+      :onClickAdd="onClickAdd"
     />
     <Card />
   </div>
