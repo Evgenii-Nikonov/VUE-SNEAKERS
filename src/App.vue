@@ -1,7 +1,20 @@
 <script setup>
+import { onMounted, ref } from 'vue'
+
+import axios from 'axios'
 import Header from './components/Header.vue'
 import CardList from './components/CardList.vue'
-import Drawer from './components/Drawer.vue'
+
+const items = ref([])
+
+onMounted(async () => {
+  try {
+    const { data } = await axios.get('https://0d2e8a6fb9e1c979.mokky.dev/items')
+    items.value = data
+  } catch (err) {
+    console.log(err)
+  }
+})
 </script>
 
 <template>
@@ -13,7 +26,7 @@ import Drawer from './components/Drawer.vue'
       <div class="flex justify-between items-center">
         <h2 class="text-3xl font-bold mb-8">Все кроссовки</h2>
         <div class="flex gap-4">
-          <select vlass="border [y-2 px-3 rounded-md outline-none]" name="" id="">
+          <select vlass="border [y-2 px-3 rounded-md outline-none cursor-pointer" name="" id="">
             <option value="">По названию</option>
             <option value="">По цене (дешёвые)</option>
             <option value="">По цене (дорогие)</option>
@@ -30,7 +43,7 @@ import Drawer from './components/Drawer.vue'
         </div>
       </div>
 
-      <CardList />
+      <CardList :items="items" />
     </div>
   </div>
 </template>
