@@ -23,12 +23,11 @@ defineProps({
     <img :src="imageUrl" alt="sneaker" />
     <p class="mt-2">{{ title }}</p>
 
-    <div class="flex justify-betwee mt-5">
-      <div class="flex flex-col">
+    <div class="flex justify-betwee items-end mt-5">
+      <div class="flex flex-col flex-1">
         <span class="text-slate-400">Цена:</span>
         <b>{{ price }} руб.</b>
       </div>
-
       <img @click="onClickAdd" :src="isAdded ? '/plus.svg' : '/checked.svg'" alt="plus" />
     </div>
   </div>

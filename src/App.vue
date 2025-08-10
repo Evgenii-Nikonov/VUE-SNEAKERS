@@ -15,14 +15,18 @@ const onChangeSelect = (event) => {
   sortBy.value = event.target.value
 }
 
-onMounted(async () => {
+const fetchItems = async () => {
   try {
-    const { data } = await axios.get('https://0d2e8a6fb9e1c979.mokky.dev/items')
+    const { data } = await axios.get(
+      'https://0d2e8a6fb9e1c979.mokky.dev/items?sortBy=' + sortBy.value,
+    )
     items.value = data
   } catch (err) {
     console.log(err)
   }
-})
+}
+
+onMounted(fetchItems)
 
 // Реализация поиска по товарам на стороне фронтенда
 // const filteredItems = computed(() => {
@@ -33,16 +37,7 @@ onMounted(async () => {
 
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 
-watch(sortBy, async () => {
-  try {
-    const { data } = await axios.get(
-      'https://0d2e8a6fb9e1c979.mokky.dev/items?sortBy=' + sortBy.value,
-    )
-    items.value = data
-  } catch (err) {
-    console.log(err)
-  }
-})
+watch(sortBy, fetchItems)
 </script>
 
 <template>
@@ -56,7 +51,7 @@ watch(sortBy, async () => {
         <div class="flex gap-4">
           <select
             @change="onChangeSelect"
-            vlass="border [y-2 px-3 rounded-md outline-none cursor-pointer"
+            class="border border-gray-300 py-2 px-3 rounded-md outline-none cursor-pointer transition"
             name=""
             id=""
           >
@@ -70,7 +65,7 @@ watch(sortBy, async () => {
           <img class="absolute left-4 top-3" src="/search.svg" alt="" />
           <input
             v-model="searchQuery"
-            class="border rounded-md py-2 pl-12 pr-4 outline-none focus:border-gray-400"
+            class="border border-gray-300 rounded-md py-2 pl-12 pr-4 outline-none focus:border-gray-500"
             type="text"
             placeholder="Поиск..."
           />
