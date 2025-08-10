@@ -1,32 +1,32 @@
 <script setup>
-import { watch, computed, onMounted, ref } from 'vue'
+import { watch, computed, onMounted, ref, reactive } from 'vue'
 
 import axios from 'axios'
 import Header from './components/Header.vue'
 import CardList from './components/CardList.vue'
 
 const items = ref([])
-
-const sortBy = ref('')
-const searchQuery = ref('')
-
-const onChangeSelect = (event) => {
-  console.log(event.target.value)
-  sortBy.value = event.target.value
-}
+const filters = reactive({
+  sortBy: 'title',
+  searchQuery: '',
+})
 
 const fetchItems = async () => {
   try {
-    const { data } = await axios.get(
-      'https://0d2e8a6fb9e1c979.mokky.dev/items?sortBy=' + sortBy.value,
-    )
+    let params = {
+      sortBy: filters.sortBy,
+    }
+
+    if (filters.searchQuery) {
+      params.title = `*${filters.searchQuery}*`
+    }
+
+    const { data } = await axios.get(`https://0d2e8a6fb9e1c979.mokky.dev/items`, { params })
     items.value = data
   } catch (err) {
     console.log(err)
   }
 }
-
-onMounted(fetchItems)
 
 // Реализация поиска по товарам на стороне фронтенда
 // const filteredItems = computed(() => {
@@ -35,9 +35,9 @@ onMounted(fetchItems)
 //   )
 // })
 
+onMounted(fetchItems)
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
-
-watch(sortBy, fetchItems)
+watch(filters, fetchItems)
 </script>
 
 <template>
@@ -50,12 +50,12 @@ watch(sortBy, fetchItems)
         <h2 class="text-3xl font-bold mb-8">Все кроссовки</h2>
         <div class="flex gap-4">
           <select
-            @change="onChangeSelect"
+            v-model="filters.sortBy"
             class="border border-gray-300 py-2 px-3 rounded-md outline-none cursor-pointer transition"
             name=""
             id=""
           >
-            <option value="namr">По названию</option>
+            <option value="name">По названию</option>
             <option value="price">По цене (дешёвые)</option>
             <option value="-price">По цене (дорогие)</option>
           </select>
@@ -64,7 +64,7 @@ watch(sortBy, fetchItems)
         <div class="relative">
           <img class="absolute left-4 top-3" src="/search.svg" alt="" />
           <input
-            v-model="searchQuery"
+            v-model="filters.searchQuery"
             class="border border-gray-300 rounded-md py-2 pl-12 pr-4 outline-none focus:border-gray-500"
             type="text"
             placeholder="Поиск..."
