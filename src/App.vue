@@ -4,13 +4,19 @@ import { watch, computed, onMounted, ref, reactive } from 'vue'
 import axios from 'axios'
 import Header from './components/Header.vue'
 import CardList from './components/CardList.vue'
+import Drawer from './components/Drawer.vue'
 
+let isShowDrawer = ref(false)
+
+// Состояние (state) которое хранит все кросовки полученные с сервера
 const items = ref([])
+
+// Реактивные стейт для фильтров
 const filters = reactive({
   sortBy: 'title',
   searchQuery: '',
 })
-
+// Функция запроса на сервер при изменении фильтров либо при монтировании компонента
 const fetchItems = async () => {
   try {
     let params = {
@@ -20,7 +26,6 @@ const fetchItems = async () => {
     if (filters.searchQuery) {
       params.title = `*${filters.searchQuery}*`
     }
-
     const { data } = await axios.get(`https://0d2e8a6fb9e1c979.mokky.dev/items`, { params })
     items.value = data
   } catch (err) {
@@ -28,14 +33,24 @@ const fetchItems = async () => {
   }
 }
 
-// Реализация поиска по товарам на стороне фронтенда
+// Реализация поиска по товарам на стороне фронтенда, пока оставить
+
 // const filteredItems = computed(() => {
 //   return items.value.filter(
 //     (item) => item.title && item.title.toLowerCase().includes(searchQuery.value.toLowerCase()),
 //   )
 // })
 
+const showDrawer = () => {
+  isShowDrawer.value = true
+}
+
+const hideDrawer = () => {
+  isShowDrawer.value = false
+}
+
 onMounted(fetchItems)
+
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)
 </script>
@@ -43,7 +58,8 @@ watch(filters, fetchItems)
 <template>
   <!-- <Drawer /> -->
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-15">
-    <Header />
+    <Header :onClickDrawer="showDrawer" />
+    <Drawer :hideDrawer="hideDrawer" v-if="isShowDrawer" />
 
     <div class="p-10">
       <div class="flex justify-between items-center">

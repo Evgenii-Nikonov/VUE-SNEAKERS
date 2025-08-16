@@ -1,12 +1,16 @@
 <script setup>
 import DrawerHead from './DrawerHead.vue'
 import CartItemList from './CartItemList.vue'
+
+defineProps({
+  hideDrawer: Function,
+})
 </script>
 
 <template>
   <div class="fixed top-0 left-0 h-full w-full bg-black z-10 opacity-50"></div>
   <div class="flex flex-col bg-white w-100 h-full fixed right-0 top-0 z-20 p-8">
-    <DrawerHead />
+    <DrawerHead :hideDrawer="hideDrawer" />
     <CartItemList />
 
     <div class="flex flex-col gap-4 mb-5 my-7">
@@ -29,3 +33,5 @@ import CartItemList from './CartItemList.vue'
     </div>
   </div>
 </template>
+
+<style></style>
