@@ -1,4 +1,6 @@
 <script setup>
+import { ref } from 'vue'
+
 defineProps({
   imageUrl: String,
   title: String,
@@ -8,6 +10,12 @@ defineProps({
   onClickAdd: Function,
   onClickFavorite: Function,
 })
+
+let isFavorit = ref(false)
+
+const changeFavorite = () => {
+  isFavorit.value = !isFavorit.value
+}
 </script>
 
 <template>
@@ -15,8 +23,8 @@ defineProps({
     class="bg-white relative border border-slate-300 rounded-3xl p-8 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition"
   >
     <img
-      @click="onClickFavorite"
-      :src="!isFavorite ? '/like-2.svg' : '/like-1.svg'"
+      @click="changeFavorite"
+      :src="!isFavorit ? '/like-2.svg' : '/like-1.svg'"
       alt="like"
       class="absolute top-8 left-8"
     />

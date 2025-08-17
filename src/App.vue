@@ -10,6 +10,7 @@ let isShowDrawer = ref(false)
 
 // Состояние (state) которое хранит все кросовки полученные с сервера
 const items = ref([])
+// const favoritesItems = ref([])
 
 // Реактивные стейт для фильтров
 const filters = reactive({
@@ -27,7 +28,30 @@ const fetchItems = async () => {
       params.title = `*${filters.searchQuery}*`
     }
     const { data } = await axios.get(`https://0d2e8a6fb9e1c979.mokky.dev/items`, { params })
-    items.value = data
+    items.value = data.map((obj) => ({
+      ...obj,
+      isFavorite: false,
+      isAdded: false,
+    }))
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const fetchFavorites = async () => {
+  try {
+    const { data: favorites } = await axios.get(`https://0d2e8a6fb9e1c979.mokky.dev/favorites`)
+    items.value = items.value.map((item) => {
+      const favorite = favorites.find(favorite.parentId === item.id)
+      if (!favorite) {
+        return item
+      }
+      return {
+        ...item,
+        isFavorite: true,
+        favoriteId: favorite.id,
+      }
+    })
   } catch (err) {
     console.log(err)
   }
@@ -49,7 +73,10 @@ const hideDrawer = () => {
   isShowDrawer.value = false
 }
 
-onMounted(fetchItems)
+onMounted(async () => {
+  await fetchItems()
+  await fetchFavorites()
+})
 
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)

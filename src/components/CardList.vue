@@ -1,17 +1,19 @@
 <script setup>
+import { ref } from 'vue'
 import Card from './Card.vue'
+ref
 defineProps({
   items: Array,
 })
 
-let isAdded = false
-let isFavorite = false
+let isAdded = ref(false)
+let isFavorite = ref(false)
 
 const onClickAdd = () => {
-  isAdded = !isAdded
+  isAdded.value = !isAdded.value
 }
 const onClickFavorite = () => {
-  isFavorite = !isFavorite
+  isFavorite.value = !isFavorite.value
 }
 </script>
 
@@ -24,7 +26,9 @@ const onClickFavorite = () => {
       :title="item.title"
       :price="item.price"
       :isAdded="isAdded"
+      :isFavorite="isFavorite"
       :onClickAdd="onClickAdd"
+      :onClickFavorite="onClickFavorite"
     />
   </div>
 </template>
