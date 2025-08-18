@@ -1,7 +1,5 @@
 <script setup>
-defineProps({
-  onClickDrawer: Function,
-})
+const emit = defineEmits(['showDrawer'])
 </script>
 
 <template>
@@ -16,7 +14,7 @@ defineProps({
 
     <ul class="flex items-center gap-10 text-gray-500">
       <li
-        @click="onClickDrawer"
+        @click="() => emit('showDrawer')"
         class="flex items-center gap-3 hover:text-black cursor-pointer duration-150 ease-in"
       >
         <img src="/cart.svg" alt="" />

@@ -1,10 +1,19 @@
 <script setup>
+import { inject } from 'vue'
 import CartItem from './CartItem.vue'
+
+const { cartItems } = inject('cart')
 </script>
 
 <template>
   <div class="flex flex-col flex-1">
-    <CartItem />
-    <CartItem />
+    <CartItem
+      v-for="item in cartItems"
+      :key="item.id"
+      :id="item.id"
+      :imageUrl="item.imageUrl"
+      :title="item.title"
+      :price="item.price"
+    />
   </div>
 </template>

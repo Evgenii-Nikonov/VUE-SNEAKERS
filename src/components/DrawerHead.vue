@@ -1,7 +1,7 @@
 <script setup>
-defineProps({
-  hideDrawer: Function,
-})
+import { inject } from 'vue'
+
+const { hideDrawer } = inject('cart')
 </script>
 
 <template>

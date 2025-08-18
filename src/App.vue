@@ -10,7 +10,7 @@ let isShowDrawer = ref(false)
 
 // Состояние (state) которое хранит все кросовки полученные с сервера
 const items = ref([])
-// const favoritesItems = ref([])
+const cartItems = ref([])
 
 // Реактивные стейт для фильтров
 const filters = reactive({
@@ -58,7 +58,6 @@ const fetchFavorites = async () => {
 }
 
 // Реализация поиска по товарам на стороне фронтенда, пока оставить
-
 // const filteredItems = computed(() => {
 //   return items.value.filter(
 //     (item) => item.title && item.title.toLowerCase().includes(searchQuery.value.toLowerCase()),
@@ -80,6 +79,20 @@ onMounted(async () => {
 
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)
+
+const addToCart = async (item) => {
+  if (!item.isAdded) {
+    cartItems.value.push(item)
+    item.isAdded = true
+  } else {
+    //Удаление кросовка из массива корзины на фронте
+    cartItems.value.splice(cartItems.value.indexOf(item), 1)
+    item.isAdded = false
+
+    // const { data } = await axios.delete(`https://0d2e8a6fb9e1c979.mokky.dev/cart/${item.cartId}`)
+    item.cartId = null
+  }
+}
 
 const addToFavorite = async (item) => {
   try {
@@ -104,13 +117,15 @@ const addToFavorite = async (item) => {
     console.log(err)
   }
 }
+
+provide('cart', { hideDrawer, showDrawer, cartItems })
 </script>
 
 <template>
+  <Drawer :hideDrawer="hideDrawer" v-if="isShowDrawer" />
   <!-- <Drawer /> -->
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-15">
-    <Header :onClickDrawer="showDrawer" />
-    <Drawer :hideDrawer="hideDrawer" v-if="isShowDrawer" />
+    <Header @show-drawer="showDrawer" />
 
     <div class="p-10">
       <div class="flex justify-between items-center">
@@ -139,7 +154,7 @@ const addToFavorite = async (item) => {
         </div>
       </div>
 
-      <CardList :items="items" @addToFavorite="addToFavorite" />
+      <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="addToCart" />
     </div>
   </div>
 </template>
