@@ -1,5 +1,5 @@
 <script setup>
-import { watch, computed, onMounted, ref, reactive } from 'vue'
+import { watch, computed, onMounted, ref, reactive, provide } from 'vue'
 
 import axios from 'axios'
 import Header from './components/Header.vue'
@@ -42,7 +42,7 @@ const fetchFavorites = async () => {
   try {
     const { data: favorites } = await axios.get(`https://0d2e8a6fb9e1c979.mokky.dev/favorites`)
     items.value = items.value.map((item) => {
-      const favorite = favorites.find(favorite.parentId === item.id)
+      const favorite = favorites.find((fav) => fav.parentId === item.id)
       if (!favorite) {
         return item
       }
@@ -80,6 +80,14 @@ onMounted(async () => {
 
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)
+
+const addToFavorite = async (item) => {
+  item.isFavorite = !item.isFavorite
+
+  console.log(item)
+}
+
+provide('addToFavorite', addToFavorite)
 </script>
 
 <template>

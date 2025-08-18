@@ -1,21 +1,14 @@
 <script setup>
-import { ref } from 'vue'
-
-defineProps({
+const props = defineProps({
+  id: Number,
   imageUrl: String,
   title: String,
   price: Number,
   isFavorite: Boolean,
   isAdded: Boolean,
-  onClickAdd: Function,
   onClickFavorite: Function,
+  onclickAdd: Function,
 })
-
-let isFavorit = ref(false)
-
-const changeFavorite = () => {
-  isFavorit.value = !isFavorit.value
-}
 </script>
 
 <template>
@@ -23,8 +16,8 @@ const changeFavorite = () => {
     class="bg-white relative border border-slate-300 rounded-3xl p-8 cursor-pointer hover:-translate-y-2 hover:shadow-xl transition"
   >
     <img
-      @click="changeFavorite"
-      :src="!isFavorit ? '/like-2.svg' : '/like-1.svg'"
+      @click="onClickFavorite"
+      :src="!isFavorite ? '/like-1.svg' : '/like-2.svg'"
       alt="like"
       class="absolute top-8 left-8"
     />
