@@ -82,12 +82,28 @@ onMounted(async () => {
 watch(filters, fetchItems)
 
 const addToFavorite = async (item) => {
-  item.isFavorite = !item.isFavorite
+  try {
+    if (!item.isFavorite) {
+      const obj = { parentId: item.id }
 
-  console.log(item)
+      item.isFavorite = true
+      const { data } = await axios.post(`https://0d2e8a6fb9e1c979.mokky.dev/favorites`, obj)
+
+      item.favoriteId = data.id
+
+      console.log(data)
+    } else {
+      item.isFavorite = false
+      const { data } = await axios.delete(
+        `https://0d2e8a6fb9e1c979.mokky.dev/favorites/${item.favoriteId}`,
+      )
+
+      item.favoriteId = null
+    }
+  } catch (err) {
+    console.log(err)
+  }
 }
-
-provide('addToFavorite', addToFavorite)
 </script>
 
 <template>
@@ -123,7 +139,7 @@ provide('addToFavorite', addToFavorite)
         </div>
       </div>
 
-      <CardList :items="items" />
+      <CardList :items="items" @addToFavorite="addToFavorite" />
     </div>
   </div>
 </template>
