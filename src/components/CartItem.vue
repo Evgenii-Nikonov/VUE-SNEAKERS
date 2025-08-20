@@ -1,10 +1,16 @@
 <script setup>
+import { inject } from 'vue'
+
+const emit = defineEmits(['onClickRemove'])
+
 defineProps({
   id: Number,
   imageUrl: String,
   title: String,
   price: Number,
 })
+
+const { addToCart } = inject('cart')
 </script>
 
 <template>
@@ -15,6 +21,7 @@ defineProps({
       <div class="flex justify-between mt-2">
         <b>{{ price }} руб. </b>
         <img
+          @click="emit('onClickRemove')"
           class="opacity-40 hover:opacity-100 transition cursor-pointer"
           src="/close.svg"
           alt="close icon"

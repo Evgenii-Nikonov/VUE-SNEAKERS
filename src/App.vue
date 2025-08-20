@@ -80,19 +80,26 @@ onMounted(async () => {
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)
 
-const addToCart = async (item) => {
-  if (!item.isAdded) {
-    cartItems.value.push(item)
-    item.isAdded = true
-  } else {
-    //Удаление кросовка из массива корзины на фронте
-    cartItems.value.splice(cartItems.value.indexOf(item), 1)
-    item.isAdded = false
+const addToCart = (item) => {
+  cartItems.value.push(item)
+  item.isAdded = true
+}
 
-    // const { data } = await axios.delete(`https://0d2e8a6fb9e1c979.mokky.dev/cart/${item.cartId}`)
-    item.cartId = null
+const removeFromCart = (item) => {
+  // cartItems.value.splice(cartItems.value.indexOf(item), 1)
+  cartItems.value = cartItems.value.filter((addedItem) => addedItem.id !== item.id)
+  item.isAdded = false
+}
+
+const onClickAddPlus = async (item) => {
+  if (!item.isAdded) {
+    addToCart(item)
+  } else {
+    removeFromCart(item)
   }
 }
+
+const removeToCart = () => {}
 
 const addToFavorite = async (item) => {
   try {
@@ -118,7 +125,7 @@ const addToFavorite = async (item) => {
   }
 }
 
-provide('cart', { hideDrawer, showDrawer, cartItems })
+provide('cart', { hideDrawer, showDrawer, cartItems, addToCart, removeFromCart })
 </script>
 
 <template>
@@ -154,7 +161,7 @@ provide('cart', { hideDrawer, showDrawer, cartItems })
         </div>
       </div>
 
-      <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="addToCart" />
+      <CardList :items="items" @add-to-favorite="addToFavorite" @add-to-cart="onClickAddPlus" />
     </div>
   </div>
 </template>
