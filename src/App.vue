@@ -80,13 +80,15 @@ onMounted(async () => {
 //*При изменении sortby делается запрос к серверу в который будет передаваться 'sortby' + sortby
 watch(filters, fetchItems)
 
+const totalPrice = computed(() => cartItems.value.reduce((acc, item) => acc + item.price, 0))
+const taxPrice = computed(() => Math.round(totalPrice.value / 100) * 5)
 const addToCart = (item) => {
   cartItems.value.push(item)
   item.isAdded = true
 }
 
-const removeFromCart = (item) => {
-  // cartItems.value.splice(cartItems.value.indexOf(item), 1)
+const removeFromCart = async (item) => {
+  // cartItems.value.splice(cartItems.value.indexOf(item), 1) (способ удаления из массива)
   cartItems.value = cartItems.value.filter((addedItem) => addedItem.id !== item.id)
   item.isAdded = false
 }
@@ -129,10 +131,15 @@ provide('cart', { hideDrawer, showDrawer, cartItems, addToCart, removeFromCart }
 </script>
 
 <template>
-  <Drawer :hideDrawer="hideDrawer" v-if="isShowDrawer" />
+  <Drawer
+    :hideDrawer="hideDrawer"
+    v-if="isShowDrawer"
+    :total-price="totalPrice"
+    :tax-price="taxPrice"
+  />
   <!-- <Drawer /> -->
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-15">
-    <Header @show-drawer="showDrawer" />
+    <Header @show-drawer="showDrawer" :total-price="totalPrice" />
 
     <div class="p-10">
       <div class="flex justify-between items-center">

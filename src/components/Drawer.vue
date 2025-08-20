@@ -4,6 +4,8 @@ import CartItemList from './CartItemList.vue'
 
 defineProps({
   hideDrawer: Function,
+  totalPrice: Number,
+  taxPrice: Number,
 })
 </script>
 
@@ -17,15 +19,16 @@ defineProps({
       <div class="flex gap-2">
         <span>Итого:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>12900 ₽</b>
+        <b>{{ totalPrice }} ₽</b>
       </div>
       <div class="flex gap-2">
         <span>Налог 5%:</span>
         <div class="flex-1 border-b border-dashed"></div>
-        <b>900 ₽</b>
+        <b>{{ taxPrice }} ₽</b>
       </div>
 
       <button
+        :disabled="!totalPrice"
         class="mt-4 bg-lime-500 rounded-xl w-full py-3 disabled:bg-slate-300 disabled:cursor-none text-white hover:bg-lime-600 transition active:bg-lime-700 cursor-pointer"
       >
         Оформить заказ
