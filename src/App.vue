@@ -101,8 +101,6 @@ const onClickAddPlus = async (item) => {
   }
 }
 
-const removeToCart = () => {}
-
 const addToFavorite = async (item) => {
   try {
     if (!item.isFavorite) {
@@ -127,15 +125,36 @@ const addToFavorite = async (item) => {
   }
 }
 
+const createOrder = async () => {
+  try {
+    const { data } = await axios.post('https://0d2e8a6fb9e1c979.mokky.dev/orders', {
+      items: cartItems.value,
+      totalPrice: totalPrice.value,
+    })
+
+    cartItems.value = []
+    items.value.forEach((item) => {
+      item.isAdded = false
+    })
+
+    console.log(items)
+
+    return data
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 provide('cart', { hideDrawer, showDrawer, cartItems, addToCart, removeFromCart })
 </script>
 
 <template>
   <Drawer
-    :hideDrawer="hideDrawer"
     v-if="isShowDrawer"
+    :hideDrawer="hideDrawer"
     :total-price="totalPrice"
     :tax-price="taxPrice"
+    @create-order="createOrder"
   />
   <!-- <Drawer /> -->
   <div class="bg-white w-4/5 m-auto rounded-xl shadow-xl mt-15">

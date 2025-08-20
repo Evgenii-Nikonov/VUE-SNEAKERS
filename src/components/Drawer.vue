@@ -7,6 +7,7 @@ defineProps({
   totalPrice: Number,
   taxPrice: Number,
 })
+const emit = defineEmits('createOrder')
 </script>
 
 <template>
@@ -30,6 +31,7 @@ defineProps({
       <button
         :disabled="!totalPrice"
         class="mt-4 bg-lime-500 rounded-xl w-full py-3 disabled:bg-slate-300 disabled:cursor-none text-white hover:bg-lime-600 transition active:bg-lime-700 cursor-pointer"
+        @click="() => emit('createOrder')"
       >
         Оформить заказ
       </button>
